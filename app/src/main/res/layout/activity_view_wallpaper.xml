@@ -23,8 +23,8 @@
             app:expandedTitleTextAppearance="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="350dp">
-            
-            
+
+
             <ImageView
                 android:id="@+id/imageThumb"
                 android:contentDescription="Wallpaper"
@@ -33,7 +33,7 @@
                 android:layout_height="match_parent" />
 
 
-            
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
@@ -49,13 +49,13 @@
 
 
     </android.support.design.widget.AppBarLayout>
-    
+
     <android.support.v4.widget.NestedScrollView
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        
+
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -83,11 +83,11 @@
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
-        
+
     </android.support.v4.widget.NestedScrollView>
-    
+
     <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabWallpaper"
+        android:id="@+id/fabWallpaper"
         android:layout_marginRight="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,5 +98,37 @@
         app:layout_anchorGravity="bottom|right|end"
         app:backgroundTint="@android:color/white"
         />
+
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabDownload"
+        android:layout_marginLeft="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_file_download_black_24dp"
+        app:elevation="6dp"
+        app:pressedTranslationZ="12dp"
+        app:layout_anchor="@id/app_bar_layout"
+        app:layout_anchorGravity="bottom|left|start"
+        app:backgroundTint="@android:color/white"
+        />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </android.support.design.widget.CoordinatorLayout>
