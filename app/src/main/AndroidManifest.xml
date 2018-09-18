@@ -3,6 +3,8 @@
     package="android.wxgsdy.androidwallpaper">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
+
 
     <application
         android:allowBackup="true"
@@ -22,7 +24,8 @@
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
             android:theme="@style/FullScreenTheme" />
-        <activity android:name=".ListWallpaper"></activity>
+        <activity android:name=".ListWallpaper" />
+        <activity android:name=".ViewWallpaper"></activity>
     </application>
 
 </manifest>
