@@ -1,6 +1,7 @@
 package android.wxgsdy.androidwallpaper.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 
 import android.wxgsdy.androidwallpaper.Common.Common;
 import android.wxgsdy.androidwallpaper.Interface.ItemClickListener;
+import android.wxgsdy.androidwallpaper.ListWallpaper;
 import android.wxgsdy.androidwallpaper.Model.CategoryItem;
 import android.wxgsdy.androidwallpaper.R;
 import android.wxgsdy.androidwallpaper.ViewHolder.CategoryViewHolder;
@@ -89,7 +91,10 @@ public class CategoryFragment extends Fragment {
                 holder.setItemClickListener(new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position) {
-                        // Code late for detail category
+                        Common.CATEGORY_ID_SELECTED = adapter.getRef(position).getKey();
+                        Common.CATEGORY_SELECTED = model.getName();
+                        Intent intent = new Intent(getActivity(), ListWallpaper.class);
+                        startActivity(intent);
                     }
                 });
 
