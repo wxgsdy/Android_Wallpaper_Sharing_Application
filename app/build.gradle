@@ -18,7 +18,14 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:26.1.0'
+    }
+}
+
 dependencies {
+    implementation 'com.flaviofaria:kenburnsview:1.0.7'
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'com.firebaseui:firebase-ui-database:3.1.2'
     implementation fileTree(dir: 'libs', include: ['*.jar'])

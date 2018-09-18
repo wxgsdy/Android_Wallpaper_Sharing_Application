@@ -20,6 +20,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(homeIntent);
                 finish();
             }
-        }, 3000);
+        }, 5000);
     }
 }
