@@ -5,8 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.wxgsdy.androidwallpaper.Fragment.CategoryFragment;
-import android.wxgsdy.androidwallpaper.Fragment.DailyPopularFragment;
+import android.wxgsdy.androidwallpaper.Fragment.TrendingFragment;
 import android.wxgsdy.androidwallpaper.Fragment.RecentsFragment;
+import android.wxgsdy.androidwallpaper.Fragment.TrendingFragment;
 
 /**
  * Created by wxgsdy on 9/16/2018.
@@ -28,7 +29,7 @@ public class MyFragmentAdapter extends FragmentPagerAdapter{
         if(position == 0)
             return CategoryFragment.getInstance();
         else if(position == 1)
-            return DailyPopularFragment.getInstance();
+            return TrendingFragment.getInstance();
         else if(position == 2)
             return RecentsFragment.getInstance(context);
         else
@@ -49,7 +50,7 @@ public class MyFragmentAdapter extends FragmentPagerAdapter{
                 return "Category";
 
             case 1:
-                return "Daily Popular";
+                return "Trending";
 
             case 2:
                 return "Recents";

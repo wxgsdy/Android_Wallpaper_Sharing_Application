@@ -26,13 +26,22 @@ import android.wxgsdy.androidwallpaper.Database.LocalDatabase.LocalDatabase;
 import android.wxgsdy.androidwallpaper.Database.LocalDatabase.RecentsDataSource;
 import android.wxgsdy.androidwallpaper.Database.Recents;
 import android.wxgsdy.androidwallpaper.Helper.SaveImageHelper;
+import android.wxgsdy.androidwallpaper.Model.WallpaperItem;
 
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.IOException;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
@@ -186,6 +195,74 @@ public class ViewWallpaper extends AppCompatActivity {
             }
         });
 
+
+        // View count
+        increaseViewCount();
+
+    }
+
+    private void increaseViewCount() {
+        FirebaseDatabase.getInstance()
+                .getReference(Common.STR_WALLPAPER)
+                .child(Common.select_background_key)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild("viewCount"))
+                        {
+                            WallpaperItem wallpaperItem = dataSnapshot.getValue(WallpaperItem.class);
+                            long count = wallpaperItem.getViewCount() + 1;
+                            // update
+                            Map<String, Object> update_view = new HashMap<>();
+                            update_view.put("viewCount", count);
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference(Common.STR_WALLPAPER)
+                                    .child(Common.select_background_key)
+                                    .updateChildren(update_view)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(ViewWallpaper.this, "Cannot update view count", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+                        else // if view count is not set(default 1)
+                        {
+                            Map<String, Object> update_view = new HashMap<>();
+                            update_view.put("viewCount", Long.valueOf(1));
+
+                            FirebaseDatabase.getInstance()
+                                    .getReference(Common.STR_WALLPAPER)
+                                    .child(Common.select_background_key)
+                                    .updateChildren(update_view)
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(ViewWallpaper.this, "Cannot set default view count", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     private void addToRecents() {
@@ -195,8 +272,8 @@ public class ViewWallpaper extends AppCompatActivity {
                 Recents recents = new Recents(
                         Common.select_background.getImageLink(),
                         Common.select_background.getCategoryId(),
-                        String.valueOf(System.currentTimeMillis())
-                );
+                        String.valueOf(System.currentTimeMillis()),
+                        Common.select_background_key);
                 recentRepository.insertRecents(recents);
                 e.onComplete();
             }
