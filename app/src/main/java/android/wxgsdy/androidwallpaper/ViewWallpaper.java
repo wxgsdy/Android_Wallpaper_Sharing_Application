@@ -15,11 +15,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.wxgsdy.androidwallpaper.Common.Common;
+import android.wxgsdy.androidwallpaper.Database.DataSource.RecentRepository;
+import android.wxgsdy.androidwallpaper.Database.LocalDatabase.LocalDatabase;
+import android.wxgsdy.androidwallpaper.Database.LocalDatabase.RecentsDataSource;
+import android.wxgsdy.androidwallpaper.Database.Recents;
 import android.wxgsdy.androidwallpaper.Helper.SaveImageHelper;
 
 
@@ -27,9 +32,20 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.IOException;
+
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class ViewWallpaper extends AppCompatActivity {
 
@@ -37,6 +53,13 @@ public class ViewWallpaper extends AppCompatActivity {
     FloatingActionButton floatingActionButton, fabDownload;
     ImageView imageView;
     CoordinatorLayout rootLayout;
+
+    //Room Database
+    CompositeDisposable compositeDisposable;
+    RecentRepository recentRepository;
+
+
+
 
 
     @Override
@@ -102,6 +125,13 @@ public class ViewWallpaper extends AppCompatActivity {
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Init RoomDatabase
+        compositeDisposable = new CompositeDisposable();
+        LocalDatabase database = LocalDatabase.getInstance(this);
+        recentRepository = RecentRepository.getInstance(RecentsDataSource.getInstance(database.recentsDAO()));
+
+
+
         // Init
         rootLayout = (CoordinatorLayout) findViewById(R.id.rootLayout);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing);
@@ -114,6 +144,9 @@ public class ViewWallpaper extends AppCompatActivity {
         Picasso.with(this)
                 .load(Common.select_background.getImageLink())
                 .into(imageView);
+
+        // add to recents
+        addToRecents();
 
         floatingActionButton = (FloatingActionButton)findViewById(R.id.fabWallpaper);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -155,9 +188,45 @@ public class ViewWallpaper extends AppCompatActivity {
 
     }
 
+    private void addToRecents() {
+        Disposable disposable = Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> e) throws Exception {
+                Recents recents = new Recents(
+                        Common.select_background.getImageLink(),
+                        Common.select_background.getCategoryId(),
+                        String.valueOf(System.currentTimeMillis())
+                );
+                recentRepository.insertRecents(recents);
+                e.onComplete();
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Consumer<Object>() {
+                    @Override
+                    public void accept(Object o) throws Exception {
+
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Log.e("ERROR", throwable.getMessage());
+                    }
+                }, new Action() {
+                    @Override
+                    public void run() throws Exception {
+
+                    }
+                });
+
+        compositeDisposable.add(disposable);
+
+    }
+
     @Override
     protected void onDestroy() {
         Picasso.with(this).cancelRequest(target);
+        compositeDisposable.clear();
         super.onDestroy();
     }
 
