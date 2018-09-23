@@ -41,6 +41,7 @@ public class HomeActivity extends AppCompatActivity
     DrawerLayout drawer;
     NavigationView navigationView;
 
+    BottomNavigationView menu_bottom;
 
 
     @Override
@@ -63,12 +64,16 @@ public class HomeActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Common.SIGN_IN_REQUEST_CODE){
-            if (resultCode == RESULT_OK){
-                Snackbar.make(drawer, new StringBuilder("Welcome ").append(FirebaseAuth.getInstance().getCurrentUser()
-                        .getEmail().toString()),Snackbar.LENGTH_LONG).show();
+            if (resultCode == RESULT_OK)
+            {
+                Snackbar.make(drawer, new StringBuilder("Welcome ")
+                        .append(FirebaseAuth.getInstance().getCurrentUser()
+                        .getEmail().toString()),Snackbar.LENGTH_LONG)
+                        .show();
 
                 //Runtime permission request
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                {
                     requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Common.PERMISSION_REQUEST_CODE);
                 }
 
@@ -94,6 +99,17 @@ public class HomeActivity extends AppCompatActivity
         toolbar.setTitle("Live Wallpaper");
         setSupportActionBar(toolbar);
 
+        menu_bottom = findViewById(R.id.navigation);
+        menu_bottom.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.action_upload){
+                    startActivity(new Intent(HomeActivity.this, UploadWallpaper.class));
+                }
+                return false;
+            }
+        });
+
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -104,7 +120,8 @@ public class HomeActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //check if not sign-in then navigate Sign-in page
-        if (FirebaseAuth.getInstance().getCurrentUser() == null){
+        if (FirebaseAuth.getInstance().getCurrentUser() == null)
+        {
             startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder().build(), Common.SIGN_IN_REQUEST_CODE);
 
         }

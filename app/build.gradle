@@ -67,6 +67,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:11.8.0'
     implementation 'com.firebaseui:firebase-ui-database:3.2.1'
     implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
+
+    // Material Spinner
+    implementation 'com.jaredrummler:material-spinner:1.2.4'
+
+    //Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
 }
+
 
 apply plugin: 'com.google.gms.google-services'
