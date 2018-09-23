@@ -380,9 +380,9 @@ public class ViewWallpaper extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Picasso.with(this).cancelRequest(target);
-        compositeDisposable.clear();
-        super.onDestroy();
+            Picasso.with(this).cancelRequest(target);
+            compositeDisposable.clear();
+            super.onDestroy();
     }
 
     @Override
